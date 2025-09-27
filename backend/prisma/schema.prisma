@@ -1,0 +1,172 @@
+// On déclare le "générateur" de client
+generator client {
+    provider = "prisma-client-js"
+}
+
+//On déclare la source de données et où trouver la base de données
+datasource db {
+    provider = "postgresql"
+    url = env("DATABASE_URL")
+}
+
+//Maintenant le modèle de données
+
+//Modèle pour les utulisateurs
+model User {
+    id String @id @default(cuid())
+    email String @unique
+    password String
+    matricule String @unique
+    fullName String?
+    role Role @default(STUDENT)
+
+    classroomId String?
+    classroom Classroom? @relation(fields: [classroomId], references: [id])
+    submissions Submission[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Classroom {
+    id String @id @default(cuid())
+    name String
+    academicYearId String
+    academicYear AcademicYear @relation(fields: [academicYearId], references: [id])
+    users User[]
+    quizzes QuizOnClassroom[]
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model AcademicYear {
+    id String @id @default(cuid())
+    name String @unique
+    startDate DateTime
+    endDate DateTime
+    classrooms Classroom[]
+    quizzes Quiz[]
+    
+    createdAt DateTime @default(now())
+    updateAt DateTime @updatedAt
+}
+
+model Course {
+    id String @id @default(cuid())
+    name String
+    code String @unique
+    quizzes Quiz[]
+
+    createdAt DateTime @default(now())
+    updateAt DateTime @updatedAt
+}
+
+//Modèle pour les Quiz et les Réponses
+model Quiz {
+    id String @id @default(cuid())
+    title String
+    status QuizStatus @default(DRAFT)
+    type EvaluationType
+    publicationDate DateTime?
+    semester Int
+
+    courseId String
+    course Course @relation(fields: [courseId], references: [id])
+
+    academicYearId String
+    academicYear AcademicYear @relation(fields: [academicYearId], references: [id])
+
+    questions Question[]
+    submissions Submission[]
+    classrooms QuizOnClassroom[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Question {
+    id String @id @default(cuid())
+    content String
+    type QuestionType
+    order Int
+
+    quizId String
+    quiz Quiz @relation(fields: [quizId],references: [id], onDelete: Cascade)
+
+    choices Choice[]
+    responses Response[]
+}
+
+model Choice {
+    id String @id @default(cuid())
+    content String
+    questionId String
+    question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+    responses Response[]
+}
+
+//-- Modèlel pour les soumissions (garantit l'anonymat) --
+model Submission {
+    id String @id @default(cuid())
+    submissionDate DateTime @default(now())
+
+    studentId String
+    student User @relation(fields: [studentId], references: [id])
+
+    quizId String
+    quiz Quiz @relation(fields: [quizId], references: [id])
+
+    responses Response[]
+}
+
+model Response {
+    id String @id @default(cuid())
+    openTextContent String?
+
+    submissionId String
+    submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+    questionId String
+    question Question @relation(fields: [questionId], references: [id])
+
+    choiceId String?
+    choice Choice? @relation(fields: [choiceId], references: [id])
+}
+
+
+//Table de liaision pour la relation Plusieurs-à-Plusieurs
+// Un Quiz peut être pour plusieurs classes, une classe peut avoir plusieurs quiz
+
+model QuizOnClassroom {
+    quizId String
+    classroomId String
+
+    quiz Quiz @relation(fields: [quizId], references: [id])
+    classroom Classroom @relation(fields: [classroomId], references: [id])
+
+    assignedAt DateTime @default(now())
+    @@id([quizId, classroomId]) //Clé primaire composite
+}
+
+// Énumérations pour avoir des types de données
+ enum Role {
+    STUDENT
+    ADMIN
+ }
+
+ enum QuizStatus {
+    DRAFT
+    PUBLISHED
+    CLOSED
+ }
+
+ enum EvaluationType {
+    MID_SEMESTER
+    END_SEMESTER
+ }
+
+ enum QuestionType {
+    MULTIPLE_CHOICE
+    OPEN_TEXT
+    YES_NO
+ }

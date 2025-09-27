@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:14 # On utilise l'image officielle de PostgreSQL version 14
+    restart: always # Redémarre toujours le conteneur s'il s'arrête
+    environment:
+      POSTGRES_USER: user_equizz
+      POSTGRES_PASSWORD: password_equizz
+      POSTGRES_DB: db_equizz
+    ports:
+      - '5432:5432' # Rend la base de données accessible depuis notre machine sur le port 5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Stocke les données pour qu'elles persistent même si on redémarre le conteneur
+
+volumes:
+  postgres_data:
