@@ -1,1 +1,40 @@
-<p>login works!</p>
+<div class="login-container">
+  <div class="login-card">
+    <h2>Connexion Administrateur</h2>
+    <p>Veuillez vous connecter pour accéder au tableau de bord.</p>
+    
+    <!-- 
+      [formGroup]="loginForm" : Lie cette balise <form> à notre propriété loginForm dans le .ts
+      (ngSubmit)="onSubmit()" : Quand ce formulaire est soumis, appelle la méthode onSubmit()
+    -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <!-- Champ pour l'email -->
+      <div class="form-group">
+        <label for="email">Adresse mail</label>
+        <input 
+          type="email" 
+          id="email"
+          placeholder="exemple@univ.com"
+          formControlName="email" 
+        />
+      </div>
+      
+      <!-- Champ pour le mot de passe -->
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <input 
+          type="password" 
+          id="password"
+          placeholder="Votre mot de passe"
+          formControlName="password" 
+        />
+      </div>
+      
+      <!-- 
+        [disabled]="!loginForm.valid" : Le bouton sera grisé et non cliquable
+        tant que le formulaire n'est pas valide (champs requis remplis, email valide, etc.)
+      -->
+      <button type="submit" class="submit-btn" [disabled]="!loginForm.valid">Se connecter</button>
+    </form>
+  </div>
+</div>
