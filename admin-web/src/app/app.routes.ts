@@ -4,6 +4,7 @@ import { Routes } from '@angular/router';
 import { Login } from './pages/login/login';
 import { Admin } from './layouts/admin/admin';
 import { Dashboard } from './pages/dashboard/dashboard';
+import { authGuard } from './core/guards/auth-guard';
 
 export const routes: Routes = [
   // --- Routes Publiques (accessibles sans connexion) ---
@@ -15,7 +16,8 @@ export const routes: Routes = [
   // --- Routes Privées (qui nécessiteront une connexion plus tard) ---
   {
     path: '', // Pour toutes les autres routes à la racine
-    component: Admin, // On charge d'abord la "coquille" de l'admin
+    component: Admin,
+    canActivate: [authGuard], // On charge d'abord la "coquille" de l'admin
     children: [
       // Ensuite, on définit les "enfants" qui s'afficheront à l'intérieur de la coquille
       {
