@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
-// ÉTAPE 1: Importer les outils pour les formulaires réactifs
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router'; // On importe le Router pour la redirection
+import { Auth } from '../../core/services/auth'; // On importe notre service
+
 
 @Component({
   selector: 'app-login',
@@ -11,28 +13,45 @@ import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angula
   styleUrl: './login.scss'
 })
 export class Login {
-  // ÉTAPE 3: Créer une propriété pour notre groupe de formulaire
-  // Le '!' dit à TypeScript: "fais-moi confiance, je l'initialiserai plus tard"
+
   loginForm!: FormGroup;
 
-  // Le constructeur est une méthode spéciale appelée à la création du composant
-  constructor() {
-    // ÉTAPE 4: Initialiser le formulaire
+  constructor(
+    private auth: Auth,
+    private router: Router
+  ) {
     this.loginForm = new FormGroup({
-      // On définit un contrôle pour chaque champ du formulaire
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required, Validators.minLength(6)]),
     });
   }
 
-  // ÉTAPE 5: Créer la méthode qui sera appelée à la soumission du formulaire
   onSubmit() {
-    // Pour l'instant, on affiche juste les valeurs dans la console pour vérifier
-    if (this.loginForm.valid) {
-      console.log('Formulaire valide !');
-      console.log('Valeurs soumises :', this.loginForm.value);
-    } else {
-      console.error('Le formulaire est invalide.');
+    if (!this.loginForm.valid) {
+      return; // Si le formulaire n'est pas valide, on ne fait rien
     }
+
+    console.log('Envoi des données au backend :', this.loginForm.value);
+
+    // On appelle la méthode login de notre service
+    this.auth.login(this.loginForm.value).subscribe({
+      // La méthode .subscribe écoute la réponse de l'Observable
+      
+      // Cas n°1 : La requête a réussi (le backend a renvoyé un statut 2xx)
+      next: (response) => {
+        console.log('Connexion réussie !', response);
+        // TODO: Stocker le token (localStorage)
+        
+        // On redirige l'utilisateur vers le tableau de bord
+        this.router.navigate(['/dashboard']); 
+      },
+      
+      // Cas n°2 : La requête a échoué (le backend a renvoyé une erreur 4xx ou 5xx)
+      error: (err) => {
+        console.error('Erreur de connexion :', err);
+        // TODO: Afficher un message d'erreur à l'utilisateur dans le HTML
+        alert('Identifiants incorrects ou erreur serveur.');
+      }
+    });
   }
 }
