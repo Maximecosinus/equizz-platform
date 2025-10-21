@@ -38,13 +38,11 @@ export class Login {
       // La méthode .subscribe écoute la réponse de l'Observable
       
       // Cas n°1 : La requête a réussi (le backend a renvoyé un statut 2xx)
-      next: (response) => {
-        console.log('Connexion réussie !', response);
-        // TODO: Stocker le token (localStorage)
-        
-        // On redirige l'utilisateur vers le tableau de bord
-        this.router.navigate(['/dashboard']); 
-      },
+       next: () => {
+      // La redirection est la seule chose qui reste ici.
+      console.log('Connexion réussie et token stocké !');
+      this.router.navigate(['/dashboard']); 
+    },
       
       // Cas n°2 : La requête a échoué (le backend a renvoyé une erreur 4xx ou 5xx)
       error: (err) => {
