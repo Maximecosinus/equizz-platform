@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import authRoutes from './api/auth.route';
 import userRoutes from './api/user.routes'; 
 import cors from 'cors'; // ÉTAPE 1: Importer le middleware
+import quizRoutes from './api/quiz.routes'; // <-- NOUVEL IMPORT
+
 
 
 // Charger les variables d'environnement depuis le fichier .env
@@ -27,6 +29,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/quizzes', quizRoutes); // <-- NOUVELLE LIGNE
 
 // Démarrer le serveur
 app.listen(PORT, () => {
