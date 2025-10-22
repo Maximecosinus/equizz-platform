@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs'; // On importe 'tap' pour les effets de bord
+import { Observable, BehaviorSubject ,tap } from 'rxjs'; 
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,17 @@ export class Auth {
   private apiUrl = 'http://localhost:3000/api/auth';
   private readonly TOKEN_KEY = 'equizz_admin_token'; // Clé pour le localStorage
 
+  //ÉTAPE 1: Créer le BehaviorSubject
+  private isAuthenticated$ = new BehaviorSubject<boolean>(this.hasToken());
+
+  private router = inject(Router);
+
+
   constructor(private http: HttpClient) { }
+
+  isLoggedIn(): Observable<boolean> {
+    return this.isAuthenticated$.asObservable();
+  }
 
   login(credentials: { email: string, password: string }): Observable<any> {
     const loginUrl = `${this.apiUrl}/login`;
@@ -21,6 +32,7 @@ export class Auth {
       tap((response: any) => {
         if (response && response.token) {
           this.setToken(response.token);
+          this.isAuthenticated$.next(true);
         }
       })
     );
@@ -49,7 +61,8 @@ export class Auth {
    * (On pourra améliorer ça plus tard en vérifiant l'expiration du token).
    * @returns true si un token est présent, sinon false.
    */
-  isAuthenticated(): boolean {
+
+  hasToken(): boolean {
     return this.getToken() !== null;
   }
 
@@ -58,6 +71,7 @@ export class Auth {
    */
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
-    // On pourra aussi rediriger l'utilisateur ici.
+    this.isAuthenticated$.next(false); // ÉTAPE 3: On notifie tout le monde de la déconnexion
+    this.router.navigate(['/login']); // On redirige vers la page de connexion
   }
 }

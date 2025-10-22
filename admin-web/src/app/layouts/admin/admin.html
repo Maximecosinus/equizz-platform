@@ -1,5 +1,17 @@
-<p>Ceci est la coquille de l'administrateur (ex: future barre de navigation).</p>
-<hr>
+<header class="main-header">
+  <h1>Tableau de bord EQuizz</h1>
+  
+  <!-- 
+    On utilise la directive *ngIf et le pipe 'async'.
+    Le pipe 'async' va automatiquement s'abonner à notre Observable isLoggedIn$
+    et afficher ce bloc seulement si la valeur est 'true'.
+  -->
+  <div *ngIf="isLoggedIn$ | async">
+    <button (click)="logout()" class="logout-btn">Déconnexion</button>
+  </div>
+</header>
 
-<!-- C'est ici que le routeur affichera le composant enfant (dashboard, etc.) -->
-<router-outlet></router-outlet>
+<main class="main-content">
+  <!-- C'est ici que le routeur affichera le composant enfant (dashboard, etc.) -->
+  <router-outlet></router-outlet>
+</main>
