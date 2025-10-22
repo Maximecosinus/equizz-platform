@@ -37,6 +37,15 @@ export class Auth {
       })
     );
   }
+
+  /**
+ * Récupère les informations du profil de l'utilisateur connecté.
+ * Grâce à l'intercepteur, le token sera ajouté automatiquement à cette requête.
+ */
+  getProfile(): Observable<any> {
+    const profileUrl = 'http://localhost:3000/api/users/me';
+    return this.http.get(profileUrl);
+  }
   
   // --- NOUVELLES MÉTHODES ---
 

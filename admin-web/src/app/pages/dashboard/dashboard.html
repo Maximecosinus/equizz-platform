@@ -1,1 +1,27 @@
-<p>dashboard works!</p>
+<div class="dashboard-container">
+  <h2>Bienvenue sur votre Tableau de Bord</h2>
+
+  <!-- 
+    On utilise *ngIf pour n'afficher ce bloc que lorsque
+    les données de userProfile ont été chargées.
+  -->
+  <div *ngIf="userProfile; else loading">
+    <p>
+      Vous êtes connecté en tant que : <strong>{{ userProfile.fullName || userProfile.email }}</strong>
+    </p>
+    <p>
+      Matricule : <strong>{{ userProfile.matricule }}</strong>
+    </p>
+    <p>
+      Rôle : <strong>{{ userProfile.role }}</strong>
+    </p>
+  </div>
+
+  <!-- 
+    #loading est une "référence de template".
+    Ce bloc sera affiché tant que la condition *ngIf est fausse.
+  -->
+  <ng-template #loading>
+    <p>Chargement de vos informations...</p>
+  </ng-template>
+</div>
