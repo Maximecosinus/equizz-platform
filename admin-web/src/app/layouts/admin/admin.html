@@ -1,17 +1,35 @@
-<header class="main-header">
-  <h1>Tableau de bord EQuizz</h1>
-  
-  <!-- 
-    On utilise la directive *ngIf et le pipe 'async'.
-    Le pipe 'async' va automatiquement s'abonner à notre Observable isLoggedIn$
-    et afficher ce bloc seulement si la valeur est 'true'.
-  -->
-  <div *ngIf="isLoggedIn$ | async">
-    <button (click)="logout()" class="logout-btn">Déconnexion</button>
-  </div>
-</header>
+<div class="admin-layout">
+  <!-- Menu de navigation latéral -->
+  <nav class="side-nav">
+    <div class="nav-header">
+      <h3>EQuizz Admin</h3>
+    </div>
+    <ul class="nav-links">
+      <li>
+        <!-- 
+          routerLink: L'URL vers laquelle naviguer.
+          routerLinkActive: La classe CSS à appliquer si ce lien est actif.
+        -->
+        <a routerLink="/dashboard" routerLinkActive="active-link">Tableau de bord</a>
+      </li>
+      <li>
+        <a routerLink="/quizzes" routerLinkActive="active-link">Gestion des Quiz</a>
+      </li>
+    </ul>
+  </nav>
 
-<main class="main-content">
-  <!-- C'est ici que le routeur affichera le composant enfant (dashboard, etc.) -->
-  <router-outlet></router-outlet>
-</main>
+  <!-- Contenu principal de la page -->
+  <div class="main-container">
+    <header class="main-header">
+      <!-- Ce h1 pourrait devenir dynamique plus tard -->
+      <h1>Tableau de bord</h1> 
+      <div *ngIf="isLoggedIn$ | async">
+        <button (click)="logout()" class="logout-btn">Déconnexion</button>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

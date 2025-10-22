@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { AsyncPipe, CommonModule } from '@angular/common'; // On importe AsyncPipe et CommonModule
 import { Observable } from 'rxjs';
 import { Auth } from '../../core/services/auth'; // On importe notre service
@@ -7,7 +7,7 @@ import { Auth } from '../../core/services/auth'; // On importe notre service
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [RouterOutlet, AsyncPipe, CommonModule], // On ajoute AsyncPipe et CommonModule
+  imports: [RouterOutlet,RouterLink, RouterLinkActive, AsyncPipe, CommonModule], // On ajoute AsyncPipe et CommonModule
   templateUrl: './admin.html',
   styleUrl: './admin.scss'
 })

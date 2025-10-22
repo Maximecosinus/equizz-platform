@@ -1,34 +1,82 @@
-.main-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background-color: #333;
-  color: white;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+// On définit des variables pour les couleurs et dimensions pour une maintenance facile
+$nav-width: 250px;
+$header-height: 70px;
+$primary-color: #3f51b5; // Un bleu un peu plus "corporate"
+$active-link-bg: darken($primary-color, 10%);
 
-  h1 {
+.admin-layout {
+  display: flex;
+  height: 100vh;
+}
+
+.side-nav {
+  width: $nav-width;
+  background-color: $primary-color;
+  color: white;
+  display: flex;
+  flex-direction: column;
+
+  .nav-header {
+    padding: 1.25rem;
+    text-align: center;
+    background-color: rgba(0,0,0,0.2);
+
+    h3 {
+      margin: 0;
+    }
+  }
+
+  .nav-links {
+    list-style: none;
+    padding: 0;
     margin: 0;
-    font-size: 1.5rem;
+
+    li a {
+      display: block;
+      padding: 1rem 1.5rem;
+      color: white;
+      text-decoration: none;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background-color: rgba(255,255,255,0.1);
+      }
+    }
+
+    .active-link {
+      background-color: $active-link-bg;
+      font-weight: bold;
+    }
   }
 }
 
-.logout-btn {
-  padding: 0.5rem 1rem;
-  border: 1px solid white;
-  border-radius: 4px;
-  background-color: transparent;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
+.main-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #f4f7f6;
+}
 
-  &:hover {
-    background-color: white;
-    color: #333;
+.main-header {
+  height: $header-height;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  
+  h1 { color: #333; }
+  
+  .logout-btn {
+    border-color: #ccc;
+    color: #555;
+    &:hover { background-color: #f1f1f1; color: #333; }
   }
 }
 
 .main-content {
+  flex: 1;
   padding: 2rem;
+  overflow-y: auto; // Ajoute une barre de défilement si le contenu est trop long
 }

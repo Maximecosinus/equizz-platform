@@ -5,6 +5,9 @@ import { Login } from './pages/login/login';
 import { Admin } from './layouts/admin/admin';
 import { Dashboard } from './pages/dashboard/dashboard';
 import { authGuard } from './core/guards/auth-guard';
+import { QuizList } from './pages/quizzes/quiz-list/quiz-list';
+import { QuizForm } from './pages/quizzes/quiz-form/quiz-form';
+
 
 export const routes: Routes = [
   // --- Routes Publiques (accessibles sans connexion) ---
@@ -25,7 +28,18 @@ export const routes: Routes = [
         component: Dashboard, // ...afficher le tableau de bord.
       },
       // On pourra ajouter d'autres pages ici plus tard (ex: /users, /quizzes)
-      
+      { 
+        path: 'quizzes', // URL: /quizzes
+        component: QuizList 
+      },
+      { 
+        path: 'quizzes/new', // URL: /quizzes/new
+        component: QuizForm 
+      },
+      { 
+        path: 'quizzes/edit/:id', // URL: /quizzes/edit/un-certain-id
+        component: QuizForm 
+      },
       // Redirection par défaut pour la partie privée
       {
         path: '', // Si l'URL est vide (juste le nom de domaine)
