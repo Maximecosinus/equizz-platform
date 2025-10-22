@@ -1,1 +1,42 @@
-<p>quiz-list works!</p>
+<div class="list-header">
+  <h2>Liste des Quiz</h2>
+  <a routerLink="/quizzes/new" class="btn btn-primary">Créer un nouveau Quiz</a>
+</div>
+
+<div *ngIf="isLoading" class="loading-indicator">
+  <p>Chargement des quiz...</p>
+</div>
+
+<div *ngIf="!isLoading && quizzes.length === 0" class="empty-state">
+  <p>Aucun quiz n'a été créé pour le moment. Commencez par en créer un !</p>
+</div>
+
+<table *ngIf="!isLoading && quizzes.length > 0" class="data-table">
+  <thead>
+    <tr>
+      <th>Titre du Quiz</th>
+      <th>Cours Associé</th>
+      <th>Type</th>
+      <th>Statut</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- On boucle sur le tableau de quiz -->
+    <tr *ngFor="let quiz of quizzes">
+      <td>{{ quiz.title }}</td>
+      <td>{{ quiz.course.name }}</td>
+      <td>{{ quiz.type === 'MID_SEMESTER' ? 'Mi-parcours' : 'Fin de semestre' }}</td>
+      <td>
+        <span class="status" [ngClass]="quiz.status.toLowerCase()">
+          {{ quiz.status === 'DRAFT' ? 'Brouillon' : (quiz.status === 'PUBLISHED' ? 'Publié' : 'Fermé') }}
+        </span>
+      </td>
+      <td>
+        <a [routerLink]="['/quizzes/edit', quiz.id]" class="btn btn-secondary">Modifier</a>
+        <!-- Le bouton Supprimer sera implémenté plus tard -->
+        <button class="btn btn-danger">Supprimer</button>
+      </td>
+    </tr>
+  </tbody>
+</table>

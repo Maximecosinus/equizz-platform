@@ -1,0 +1,54 @@
+@import '../../../../styles/variables'; // On va créer ce fichier de variables
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.loading-indicator, .empty-state {
+  text-align: center;
+  padding: 3rem;
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+
+  th, td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  thead {
+    background-color: #fafafa;
+    th {
+      font-weight: 600;
+      color: #555;
+    }
+  }
+
+  td {
+    .btn {
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+.status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  &.draft { background-color: #e0e0e0; color: #555; }
+  &.published { background-color: #c8e6c9; color: #2e7d32; }
+  &.closed { background-color: #ffcdd2; color: #c62828; }
+}
