@@ -4,7 +4,7 @@ import authRoutes from './api/auth.route';
 import userRoutes from './api/user.routes'; 
 import cors from 'cors'; // ÉTAPE 1: Importer le middleware
 import quizRoutes from './api/quiz.routes'; // <-- NOUVEL IMPORT
-
+import adminRoutes from './api/admin.routes';
 
 
 // Charger les variables d'environnement depuis le fichier .env
@@ -29,7 +29,8 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/quizzes', quizRoutes); // <-- NOUVELLE LIGNE
+app.use('/api/quizzes', quizRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Démarrer le serveur
 app.listen(PORT, () => {
