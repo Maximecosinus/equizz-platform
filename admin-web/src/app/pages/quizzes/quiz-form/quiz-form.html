@@ -1,1 +1,56 @@
-<p>quiz-form works!</p>
+<div class="form-container">
+  <h2>Créer un Modèle d'Évaluation</h2>
+  
+  <form [formGroup]="quizForm" (ngSubmit)="onSubmit()">
+    <!-- Section des informations générales du quiz -->
+    <div class="form-section">
+      <div class="form-group">
+        <label for="title">Titre de l'évaluation</label>
+        <input id="title" type="text" formControlName="title" placeholder="Ex: Évaluation fin de semestre S2 24/25">
+      </div>
+      <!-- On ajoutera les selects pour Année, Semestre, Classe(s) ici -->
+    </div>
+
+    <!-- Section pour la gestion dynamique des questions -->
+    <div class="form-section">
+      <h3>Questions du formulaire</h3>
+
+      <!-- 
+        On lie la div au FormArray 'questions'.
+        C'est nécessaire pour que la boucle *ngFor fonctionne correctement.
+      -->
+      <div formArrayName="questions">
+        <!-- 
+          On boucle sur chaque 'question' (qui est un FormGroup) dans notre FormArray 'questions'.
+          On utilise l'index 'i' pour lier chaque groupe de champs au bon FormGroup dans le tableau.
+        -->
+        <div *ngFor="let question of questions.controls; let i = index" [formGroupName]="i" class="question-block">
+          <h4>Question {{ i + 1 }}</h4>
+
+          <div class="form-group">
+            <label [for]="'content-' + i">Texte de la question</label>
+            <textarea [id]="'content-' + i" formControlName="content" rows="3"></textarea>
+          </div>
+
+          <!-- Bouton pour supprimer cette question spécifique -->
+          <button type="button" (click)="removeQuestion(i)" class="btn btn-danger btn-sm">
+            Supprimer la question
+          </button>
+        </div>
+      </div>
+
+      <!-- Bouton pour ajouter une nouvelle question à la liste -->
+      <button type="button" (click)="addQuestion()" class="btn btn-secondary">
+        + Ajouter une question
+      </button>
+    </div>
+    
+    <!-- Actions du formulaire principal -->
+    <div class="form-actions">
+      <button type="submit" [disabled]="!quizForm.valid" class="btn btn-primary">
+        Enregistrer le modèle
+      </button>
+      <a routerLink="/quizzes" class="btn">Annuler</a>
+    </div>
+  </form>
+</div>
