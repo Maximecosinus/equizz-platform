@@ -9,7 +9,47 @@
         <input id="title" type="text" formControlName="title" placeholder="Ex: Évaluation fin de semestre S2 24/25">
       </div>
       <!-- On ajoutera les selects pour Année, Semestre, Classe(s) ici -->
+      <!-- ... dans la section des informations générales ... -->
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="academicYear">Année Académique</label>
+        <select id="academicYear" formControlName="academicYearId">
+          <option [ngValue]="null" disabled>Sélectionner une année</option>
+          <!-- On utilise le pipe 'async' pour lier directement l'Observable au template -->
+          <option *ngFor="let year of academicYears$ | async" [value]="year.id">
+            {{ year.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="semester">Semestre</label>
+        <select id="semester" formControlName="semester">
+          <option [ngValue]="null" disabled>Sélectionner un semestre</option>
+          <option [value]="1">Semestre 1</option>
+          <option [value]="2">Semestre 2</option>
+        </select>
+      </div>
     </div>
+
+    <div class="form-group">
+      <label for="type">Type d'évaluation</label>
+      <select id="type" formControlName="type">
+        <option [ngValue]="null" disabled>Sélectionner un type</option>
+        <option value="MID_SEMESTER">Mi-parcours</option>
+        <option value="END_SEMESTER">Fin de semestre</option>
+      </select>
+    </div>
+
+  <div class="form-group">
+    <label for="classrooms">Classes concernées (maintenir CTRL pour sélection multiple)</label>
+    <select id="classrooms" formControlName="classroomIds" multiple>
+      <option *ngFor="let classroom of classrooms$ | async" [value]="classroom.id">
+        {{ classroom.name }}
+      </option>
+    </select>
+  </div>
+</div>
 
     <!-- Section pour la gestion dynamique des questions -->
     <div class="form-section">

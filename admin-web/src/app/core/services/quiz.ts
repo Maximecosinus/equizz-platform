@@ -29,4 +29,10 @@ export class QuizService { // Renommez la classe si votre CLI l'a nommée Quiz
   getQuizzes(): Observable<Quiz[]> {
     return this.http.get<Quiz[]>(this.apiUrl);
   }
+
+  // dans quiz.service.ts
+  createQuiz(quizData: any): Observable<any> {
+    return this.http.post(this.apiUrl, quizData);
+  }
+
 }

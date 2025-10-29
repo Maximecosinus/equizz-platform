@@ -27,3 +27,23 @@ export const createCourse = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Erreur création cours', error });
   }
 };
+
+// Récupère toutes les années académiques
+export const getAcademicYears = async (req: Request, res: Response) => {
+  try {
+    const years = await prisma.academicYear.findMany({ orderBy: { name: 'desc' } });
+    res.status(200).json(years);
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur récupération années', error });
+  }
+};
+
+// Récupère toutes les classes
+export const getClassrooms = async (req: Request, res: Response) => {
+  try {
+    const classrooms = await prisma.classroom.findMany({ orderBy: { name: 'asc' } });
+    res.status(200).json(classrooms);
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur récupération classes', error });
+  }
+};

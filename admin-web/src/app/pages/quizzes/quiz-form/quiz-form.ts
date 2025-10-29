@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 // On importe les outils pour les formulaires réactifs
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AdminService, AcademicYear, Classroom } from '../../../core/services/admin';
+import { Observable } from 'rxjs';
+import { QuizService } from '../../../core/services/quiz';
 
 @Component({
   selector: 'app-quiz-form',
@@ -16,15 +19,25 @@ export class QuizForm implements OnInit {
   // On injecte le FormBuilder, un outil pratique pour créer des formulaires complexes
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private adminService = inject(AdminService);
 
+  //Observables pour stocker les données des listes déroulantes
+  academicYears$!: Observable<AcademicYear[]>;
+  classrooms$!: Observable<Classroom[]>;
   quizForm!: FormGroup;
 
   ngOnInit(): void {
+
+    // On charge les données pour les selects au démarrage du composant
+    this.academicYears$ = this.adminService.getAcademicYears();
+    this.classrooms$ = this.adminService.getClassrooms();
     // On initialise le formulaire principal
     this.quizForm = this.fb.group({
       title: ['', Validators.required], // Titre de l'évaluation, ex: "Évaluation S2 24/25"
-      // On ajoutera plus tard les listes déroulantes pour l'année et le semestre
-      
+      academicYearId: [null, Validators.required],
+      semester: [null, Validators.required],
+      type: [null, Validators.required],
+      classroomIds: [[], Validators.required], // Pour une sélection multiple
       // On crée un "FormArray" pour gérer une liste dynamique de questions
       questions: this.fb.array([]) // Commence avec un tableau de questions vide
     });
@@ -63,14 +76,24 @@ export class QuizForm implements OnInit {
     this.questions.removeAt(index);
   }
 
+  private quizService= inject(QuizService);
   /**
    * Méthode appelée à la soumission du formulaire principal.
    */
   onSubmit(): void {
-    if (this.quizForm.valid) {
-      console.log('Formulaire de Quiz soumis :', this.quizForm.value);
-      // TODO: Appeler un service pour sauvegarder ces données.
-    } else {
+  if (this.quizForm.valid) {
+    console.log('Données envoyées:', this.quizForm.value);
+    this.quizService.createQuiz(this.quizForm.value).subscribe({
+      next: () => {
+        alert('Quiz créé avec succès !');
+        this.router.navigate(['/quizzes']);
+      },
+      error: (err) => {
+        console.error('Erreur lors de la création du quiz', err);
+        alert('Une erreur est survenue.');
+      }
+    });
+  } else {
       console.error('Le formulaire est invalide.');
     }
   }
