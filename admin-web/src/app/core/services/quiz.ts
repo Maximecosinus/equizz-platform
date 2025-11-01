@@ -35,4 +35,12 @@ export class QuizService { // Renommez la classe si votre CLI l'a nommée Quiz
     return this.http.post(this.apiUrl, quizData);
   }
 
+  getQuiz(id: string): Observable<Quiz> { // On peut réutiliser l'interface Quiz
+    return this.http.get<Quiz>(`${this.apiUrl}/${id}`);
+  }
+
+  updateQuiz(id: string, quizData: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, quizData);
+  }
+
 }

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createQuiz, getAllQuizzes } from '../core/quiz.controller';
+import { createQuiz, getAllQuizzes, getQuizById, updateQuiz } from '../core/quiz.controller';
 import { isAuthenticated } from '../middlewares/auth.middleware';
 const router = Router();
 
@@ -10,4 +10,6 @@ router.use(isAuthenticated);
 // Définition de la route GET /api/quizzes/
 router.get('/', getAllQuizzes);
 router.post('/', createQuiz);
+router.get('/:id', getQuizById);
+router.put('/:id', updateQuiz);
 export default router;

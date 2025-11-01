@@ -77,3 +77,79 @@ export const createQuiz = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Erreur serveur lors de la création du quiz.', error });
   }
 };
+
+/**
+ * Récupère un quiz spécifique par son ID.
+ */
+export const getQuizById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const quiz = await prisma.quiz.findUnique({
+      where: { id },
+      // On inclut les questions et les classes associées
+      include: {
+        questions: { orderBy: { order: 'asc' } },
+        classrooms: { include: { classroom: true } },
+      },
+    });
+
+    if (!quiz) {
+      return res.status(404).json({ message: 'Quiz non trouvé.' });
+    }
+    res.status(200).json(quiz);
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur serveur lors de la récupération du quiz.', error });
+  }
+};
+
+/**
+ * Met à jour un quiz existant.
+ */
+export const updateQuiz = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { title, type, semester, academicYearId, classroomIds, questions } = req.body;
+
+  try {
+    // Logique complexe : on doit supprimer les anciennes liaisons de classe,
+    // supprimer les anciennes questions, puis recréer les nouvelles.
+    // Le tout dans une transaction pour garantir la cohérence.
+    const updatedQuiz = await prisma.$transaction(async (tx) => {
+      // 1. Supprimer les anciennes liaisons Quiz <-> Classroom
+      await tx.quizOnClassroom.deleteMany({ where: { quizId: id } });
+
+      // 2. Supprimer les anciennes questions
+      await tx.question.deleteMany({ where: { quizId: id } });
+
+      // 3. Mettre à jour le quiz avec les nouvelles données et recréer les liaisons
+      const quiz = await tx.quiz.update({
+        where: { id },
+        data: {
+          title,
+          type,
+          semester,
+          academicYearId,
+          questions: {
+            create: questions.map((q: any) => ({
+              content: q.content,
+              type: q.type || 'MULTIPLE_CHOICE',
+              order: q.order || 0,
+            })),
+          },
+          classrooms: {
+            create: classroomIds.map((classId: string) => ({
+              classroomId: classId,
+            })),
+          },
+        },
+        include: { questions: true, classrooms: true },
+      });
+
+      return quiz;
+    });
+
+    res.status(200).json(updatedQuiz);
+  } catch (error) {
+    console.error("Erreur mise à jour quiz:", error);
+    res.status(500).json({ message: 'Erreur serveur lors de la mise à jour du quiz.', error });
+  }
+};
