@@ -1,5 +1,7 @@
-import express, { Request, Response } from 'express'; // On importe les types Request et Response
 import dotenv from 'dotenv';
+// ÉTAPE 1: Exécuter la configuration des variables d'environnement EN PREMIER
+dotenv.config();
+import express, { Request, Response } from 'express'; // On importe les types Request et Response
 import authRoutes from './api/auth.route';
 import userRoutes from './api/user.routes'; 
 import cors from 'cors'; // ÉTAPE 1: Importer le middleware

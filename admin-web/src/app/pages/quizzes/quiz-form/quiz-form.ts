@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 // On importe les outils pour les formulaires réactifs
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { AdminService, AcademicYear, Classroom } from '../../../core/services/admin';
 import { Observable, switchMap, of } from 'rxjs';
 import { QuizService } from '../../../core/services/quiz';
@@ -10,8 +10,8 @@ import { QuizService } from '../../../core/services/quiz';
 @Component({
   selector: 'app-quiz-form',
   standalone: true,
-  // On ajoute ReactiveFormsModule à la boîte à outils
-  imports: [CommonModule, ReactiveFormsModule],
+  // On ajoute ReactiveFormsModule et RouterLink à la boîte à outils
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './quiz-form.html',
   styleUrl: './quiz-form.scss'
 })
@@ -21,6 +21,7 @@ export class QuizForm implements OnInit {
   private router = inject(Router);
   private adminService = inject(AdminService);
   private route = inject(ActivatedRoute);
+  private quizService = inject(QuizService);
 
   editMode = false;
   currentQuizId: string | null = null;
@@ -128,7 +129,6 @@ patchForm(quiz: any): void {
     this.questions.removeAt(index);
   }
 
-  private quizService= inject(QuizService);
   /**
    * Méthode appelée à la soumission du formulaire principal.
    */

@@ -47,3 +47,18 @@ export const getClassrooms = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Erreur récupération classes', error });
   }
 };
+
+export const createClassroom = async (req: Request, res: Response) => {
+  const { name, academicYearId } = req.body;
+  if (!name || !academicYearId) {
+    return res.status(400).json({ message: "Le nom et l'ID de l'année sont requis." });
+  }
+  try {
+    const classroom = await prisma.classroom.create({
+      data: { name, academicYearId },
+    });
+    res.status(201).json(classroom);
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur création classe', error });
+  }
+};
