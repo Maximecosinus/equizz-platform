@@ -8,9 +8,7 @@ export interface Quiz {
   title: string;
   status: 'DRAFT' | 'PUBLISHED' | 'CLOSED';
   type: 'MID_SEMESTER' | 'END_SEMESTER';
-  course: {
-    name: string;
-  };
+  academicYear: { name: string; };
   createdAt: string;
 }
 

@@ -55,7 +55,7 @@ model Course {
     id String @id @default(cuid())
     name String
     code String @unique
-    quizzes Quiz[]
+    //quizzes Quiz[]
 
     createdAt DateTime @default(now())
     updateAt DateTime @updatedAt
@@ -70,8 +70,6 @@ model Quiz {
     publicationDate DateTime?
     semester Int
 
-    courseId String
-    course Course @relation(fields: [courseId], references: [id])
 
     academicYearId String
     academicYear AcademicYear @relation(fields: [academicYearId], references: [id])

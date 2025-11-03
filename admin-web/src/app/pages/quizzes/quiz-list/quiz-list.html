@@ -15,7 +15,7 @@
   <thead>
     <tr>
       <th>Titre du Quiz</th>
-      <th>Cours Associé</th>
+      <th>Année Académique</th>
       <th>Type</th>
       <th>Statut</th>
       <th>Actions</th>
@@ -25,7 +25,7 @@
     <!-- On boucle sur le tableau de quiz -->
     <tr *ngFor="let quiz of quizzes">
       <td>{{ quiz.title }}</td>
-      <td>{{ quiz.course.name }}</td>
+      <td>{{ quiz.academicYear.name }}</td>
       <td>{{ quiz.type === 'MID_SEMESTER' ? 'Mi-parcours' : 'Fin de semestre' }}</td>
       <td>
         <span class="status" [ngClass]="quiz.status.toLowerCase()">

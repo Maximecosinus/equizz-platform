@@ -11,7 +11,7 @@ export const getAllQuizzes = async (req: Request, res: Response) => {
     const quizzes = await prisma.quiz.findMany({
       // On inclut les informations du cours associé à chaque quiz
       include: {
-        course: true, 
+        academicYear: true,
       },
       // On ordonne les quiz du plus récent au plus ancien
       orderBy: {
@@ -26,45 +26,49 @@ export const getAllQuizzes = async (req: Request, res: Response) => {
 
 // ... dans backend/src/core/quiz.controller.ts
 
-export const createQuiz = async (req: Request, res: Response) => {
-  // On extrait maintenant les questions du corps de la requête
-  const { title, type, semester, academicYearId, classroomIds, questions, courseId } = req.body;
+// REMPLACEZ l'ancienne fonction createQuiz par celle-ci
 
-  // Validation de base
-  if (!title || !type || !semester || !academicYearId || !classroomIds || !questions || !courseId) {
-    return res.status(400).json({ message: "Données manquantes pour créer le quiz." });
+export const createQuiz = async (req: Request, res: Response) => {
+  // On extrait les données envoyées par le formulaire Angular.
+  // Notez que 'courseId' a été enlevé.
+  const { title, type, semester, academicYearId, classroomIds, questions } = req.body;
+
+  // Validation de base (maintenant correcte, sans courseId)
+  if (!title || !type || !semester || !academicYearId || !classroomIds || !questions) {
+    // Pour le débogage, on peut renvoyer un message plus précis
+    return res.status(400).json({ 
+      message: "Données manquantes pour créer le quiz.",
+      // On peut lister ce qu'on a reçu pour aider au débogage
+      received: { title, type, semester, academicYearId, classroomIds: !!classroomIds, questions: !!questions }
+    });
   }
   if (!Array.isArray(questions) || questions.length === 0) {
     return res.status(400).json({ message: "Le quiz doit contenir au moins une question." });
   }
 
   try {
-    // On utilise une transaction Prisma pour assurer l'intégrité des données
     const newQuiz = await prisma.quiz.create({
       data: {
         title,
         type,
-        semester,
+        // On s'assure que le semestre est bien un nombre
+        semester: parseInt(semester, 10), 
         academicYearId,
-        courseId,
         status: 'DRAFT',
-        // --- Logique d'écriture imbriquée ---
-        // 1. On crée les questions en même temps que le quiz
         questions: {
-          create: questions.map((q: any) => ({
+          create: questions.map((q: any, index: number) => ({
             content: q.content,
-            type: q.type || 'MULTIPLE_CHOICE', // Valeur par défaut si non fourni
-            order: q.order || 0,
+            // On s'assure que le type de question est bien défini
+            type: q.type || 'MULTIPLE_CHOICE', 
+            order: index, // On utilise l'index du tableau pour l'ordre
           }))
         },
-        // 2. On connecte le quiz aux classes via la table de liaison
         classrooms: {
           create: classroomIds.map((id: string) => ({
             classroomId: id
           }))
         }
       },
-      // On inclut les questions créées dans la réponse pour confirmation
       include: {
         questions: true,
         classrooms: true
