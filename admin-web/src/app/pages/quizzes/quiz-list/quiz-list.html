@@ -35,7 +35,9 @@
       <td>
         <a [routerLink]="['/quizzes/edit', quiz.id]" class="btn btn-secondary">Modifier</a>
         <!-- Le bouton Supprimer sera implémenté plus tard -->
-        <button class="btn btn-danger">Supprimer</button>
+        <button (click)="onDeleteQuiz(quiz.id, quiz.title)" class="btn btn-danger">
+          Supprimer
+        </button>
       </td>
     </tr>
   </tbody>

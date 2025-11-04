@@ -41,4 +41,9 @@ export class QuizService { // Renommez la classe si votre CLI l'a nommée Quiz
     return this.http.put(`${this.apiUrl}/${id}`, quizData);
   }
 
+  deleteQuiz(id: string): Observable<void> {
+  // La réponse d'un DELETE est souvent vide, donc le type de l'Observable est <void>
+  return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
 }

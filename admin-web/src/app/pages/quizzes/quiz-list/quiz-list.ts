@@ -34,4 +34,28 @@ export class QuizList implements OnInit {
       }
     });
   }
+
+  onDeleteQuiz(quizId: string, quizTitle: string): void {
+  // On utilise la fonction `confirm` native du navigateur.
+  // C'est simple et efficace pour commencer. On pourra la remplacer
+  // par une belle modale plus tard si on le souhaite.
+  const confirmation = confirm(`Êtes-vous sûr de vouloir supprimer le quiz "${quizTitle}" ?\nCette action est irréversible.`);
+
+  // Si l'utilisateur clique sur "OK" (true)
+  if (confirmation) {
+    this.quizService.deleteQuiz(quizId).subscribe({
+      next: () => {
+        console.log('Quiz supprimé avec succès !');
+        // On rafraîchit la liste en retirant le quiz supprimé
+        // C'est plus efficace que de tout recharger depuis le serveur.
+        this.quizzes = this.quizzes.filter(quiz => quiz.id !== quizId);
+        alert(`Le quiz "${quizTitle}" a été supprimé.`);
+      },
+      error: (err) => {
+        console.error('Erreur lors de la suppression du quiz :', err);
+        alert('Une erreur est survenue lors de la suppression.');
+      }
+    });
+  }
+}
 }
