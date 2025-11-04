@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+
 
 const prisma = new PrismaClient();
 
@@ -155,5 +157,28 @@ export const updateQuiz = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Erreur mise à jour quiz:", error);
     res.status(500).json({ message: 'Erreur serveur lors de la mise à jour du quiz.', error });
+  }
+};
+
+export const deleteQuiz = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    // Prisma gère la suppression en cascade.
+    // En supprimant le quiz, les questions (onDelete: Cascade)
+    // et les liaisons QuizOnClassroom seront automatiquement supprimées.
+    await prisma.quiz.delete({
+      where: { id },
+    });
+
+    // On renvoie un statut 204 No Content, qui est le standard pour
+    // une suppression réussie qui ne renvoie pas de corps de réponse.
+    res.status(204).send();
+  } catch (error) {
+    // Gère le cas où le quiz à supprimer n'existe pas
+     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+      return res.status(404).json({ message: 'Quiz non trouvé.' });
+    }
+    console.error("Erreur suppression quiz:", error);
+    res.status(500).json({ message: 'Erreur serveur lors de la suppression du quiz.', error });
   }
 };
